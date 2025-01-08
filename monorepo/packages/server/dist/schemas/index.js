@@ -15,7 +15,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./users"), exports);
-__exportStar(require("./posts"), exports);
-__exportStar(require("./comments"), exports);
+__exportStar(require("./matches"), exports);
+__exportStar(require("./tournaments"), exports);
+__exportStar(require("./participants"), exports);
 __exportStar(require("./relations"), exports);
 // Les relations TOUJOURS EXPORTEES EN DERNIER !!!

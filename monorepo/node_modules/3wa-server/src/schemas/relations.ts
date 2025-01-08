@@ -1,31 +1,28 @@
 import { relations } from "drizzle-orm";
-import { users, comments, posts } from "./";
+import { users, tournaments, matches, participants } from "./";
 
+// Define relationships for the `users` table
 export const userRelations = relations(users, ({ many }) => ({
-    posts: many(posts), // un utilisateur peut avoir plusieurs posts
-    comments: many(comments) // un utilisateur peut avoir plusieurs commentaires
+  matchesAsPlayer1: many(matches), // A user can be player 1 in multiple matches
+  matchesAsPlayer2: many(matches), // A user can be player 2 in multiple matches
+  tournamentParticipations: many(participants), // A user can participate in multiple tournaments
 }));
 
-export const commentRelations = relations(comments, ({ one }) =>  ({
-    user: one(users, { // le nom de la table est référencée ici, un commentaire est lié à un seul utilisateur
-        // premièrement, on recupere la colonne qui fait référence à users dans la table comments
-        fields: [comments.authorId],
-        // deuxiemement, on recupere la colonne/table qui fait reference à la colonne authorId de la table comments
-        references: [users.id]
-    }),
-    
-    post: one(posts, { // le nom de la table est référencée ici, un commentaire est lié à un seul utilisateur
-        // premièrement, on recupere la colonne qui fait référence à users dans la table comments
-        fields: [comments.postId],
-        // deuxiemement, on recupere la colonne/table qui fait reference à la colonne authorId de la table comments
-        references: [posts.id]
-    })
+// Define relationships for the `tournaments` table
+export const tournamentRelations = relations(tournaments, ({ many }) => ({
+  matches: many(matches), // A tournament can have multiple matches
+  participants: many(participants), // A tournament can have multiple participants
 }));
 
-export const postRelation = relations(posts, ({ one, many }) => ({
-    user: one(users, {
-        fields: [posts.author],
-        references: [users.id]
-    }),
-    comments: many(comments)
-}))
+// Define relationships for the `matches` table
+export const matchRelations = relations(matches, ({ one }) => ({
+  tournament: one(tournaments), // Each match belongs to one tournament
+  player1: one(users), // Player 1 is a single user
+  player2: one(users), // Player 2 is a single user
+}));
+
+// Define relationships for the `participants` table
+export const participantRelations = relations(participants, ({ one }) => ({
+  user: one(users), // Each participant corresponds to one user
+  tournament: one(tournaments), // Each participant corresponds to one tournament
+}));

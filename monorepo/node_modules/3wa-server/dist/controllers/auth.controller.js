@@ -13,24 +13,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logout = exports.login = exports.register = void 0;
-const zod_1 = require("zod");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const zod_1 = require("zod");
 const env_1 = require("../config/env");
 const utils_1 = require("../utils");
 const users_validation_1 = require("../validation/users.validation");
+const user_model_1 = require("../models/user.model");
 const { NODE_ENV, JWT_SECRET } = env_1.env;
 const register = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Validation des données entrantes avec Zod
         const { email, password, username } = users_validation_1.userValidation.parse(request.body);
-        return (0, utils_1.APIResponse)(response, null, "Vous êtes inscrit", 200);
+        const emailAlreadyExists = yield (0, user_model_1.findByCredentials)(email);
+        if (emailAlreadyExists)
+            return (0, utils_1.APIResponse)(response, [], "Cet email est déjà utilisé", 400);
+        const hash = yield (0, utils_1.hashPassword)(password);
+        if (!hash)
+            throw new Error("Erreur lors du hashage du mot de passe");
+        const [newUser] = yield (0, user_model_1.addUser)({ username, email, password: hash });
+        if (!newUser)
+            return (0, utils_1.APIResponse)(response, [], "Erreur lors de la création de l'utilisateur", 500);
+        return (0, utils_1.APIResponse)(response, newUser.id, "Vous êtes inscrit", 200);
     }
     catch (err) {
-        // Si l'erreur est lancée par Zod, on informe le client des champs invalides
-        if (err instanceof zod_1.z.ZodError) {
-            return (0, utils_1.APIResponse)(response, err.errors, "Le formulaire est invalide", 400);
-        }
         utils_1.logger.error(`Erreur lors de l'inscription de l'utilisateur: ${err.message}`);
+        if (err instanceof zod_1.z.ZodError) {
+            // ici on retourne les erreurs de validation
+            return (0, utils_1.APIResponse)(response, err.errors, "Formulaire incorrect", 400);
+        }
         (0, utils_1.APIResponse)(response, null, "Erreur serveur", 500);
     }
 });
@@ -38,13 +47,21 @@ exports.register = register;
 const login = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = request.body;
-        // ... on insérera ici la logique d'authentification pour vérifier les informations de l'utilisateur
-        // ce qui est en dessous: on considére que l'authentification est successful
-        const accessToken = jsonwebtoken_1.default.sign({ id: 12 }, JWT_SECRET, { expiresIn: '1h' });
+        const user = yield (0, user_model_1.findByCredentials)(email);
+        if (!user)
+            return (0, utils_1.APIResponse)(response, [], "Email ou mot de passe invalide", 400);
+        // vérification du mot de passe
+        if ((yield (0, utils_1.verifyPassword)(user.password, password)) === false) {
+            return (0, utils_1.APIResponse)(response, [], "Email ou mot de passe invalide", 400);
+        }
+        // email + mdp corrects
+        // Génération des tokens refresh/access (continuer à rester connecté après une longue periode d'activité)
+        const accessToken = jsonwebtoken_1.default.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+        // On ajoute les cookies: il faut bien que ces deux tokens servent à quelque chose: on aura 2 cookies, un de la valeur de l'accesstoken et un autre du refresh token
         response.cookie('accessToken', accessToken, {
-            httpOnly: true, // Empeche l'accès au cookie via JS
-            sameSite: 'strict', // Protection contre les attaques CSRF
-            secure: NODE_ENV === "production" // On envoit le cookie uniquement via HTTPS
+            httpOnly: true, // true empêche l'accès au cookie en javascript: accessible uniquement via communication http
+            sameSite: 'strict', // protége contre les attaques CSRF
+            secure: NODE_ENV === "production" // signifie que le cookie ne sera envoyé que sur du HTTPS
         });
         (0, utils_1.APIResponse)(response, null, "Vous êtes connecté", 200);
     }

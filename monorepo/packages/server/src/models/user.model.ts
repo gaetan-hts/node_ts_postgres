@@ -1,90 +1,31 @@
-import { db } from "../config/pool";
 import { eq } from "drizzle-orm";
-import { users } from "../schemas";
-import { User, NewUser } from "../entities/User";
+import { db } from "../config/pool";
+import { users } from "../schemas/users";
 import { logger } from "../utils";
 
-// Ce fichier de model corresponds à une écriture + ancienne de drizzle (method objets pour les requetes)
-
-export const getAllUsers = () => {
+// Get all users
+export const getUsers = async () => {
     try {
-        return db.query.users.findMany({
-            columns: {
-                id: true,
-                username: true
-            }
-        });
-    } catch (err: any) {
-        logger.error(`Erreur lors de la récupération des utilisateurs; ${err.message}`);
-        throw new Error("Impossible de récupérer les utilisateurs")
+        const usersList = await db.select().from(users);
+        return usersList;
+    } catch (error: any) {
+        logger.error(`Error fetching users: ${error.message}`);
+        throw new Error("Error fetching users");
     }
 };
 
-export const getUserById = (id: string) => {
+// Get a user by ID
+export const getUser = async (id: string) => {
     try {
-        return db.query.users.findFirst({
-            where: eq(users.id, id),
-            columns: {
-                id: true,
-                username: true
-            },
-            with: {
-                comments: {
-                    columns: {
-                        id: true,
-                        content: true,
-                    }
-                },
-                posts: {
-                    columns: {
-                        id: true,
-                        title: true
-                    }
-                }
-            }
-        });
-
-        // En SQL ca donnerait:
-        // SELECT id, username, comments.id, comments.content, posts.id, posts.title FROM users WHERE id = 'id' LEFT JOIN comments ON users.id = comments.author LEFT JOIN posts ON users.id = posts.author_id;
-    } catch (err: any) {
-        logger.error(`Erreur lors de la récupération de l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de récupérer l'utilisateur")
+        const user = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, id))
+            .limit(1)
+            .then(results => results[0]);
+        return user;
+    } catch (error: any) {
+        logger.error(`Error fetching user by ID: ${error.message}`);
+        throw new Error("Error fetching user by ID");
     }
 };
-
-export const findByCredentials = (email: string) => {
-    try {
-        return db.query.users.findFirst({
-            where: eq(users.email, email),
-            columns: {
-                id: true,
-                email: true,
-                username: true,
-                password: true
-            }
-        });
-    } catch (err: any) {
-        logger.error(`Erreur lors de la récupération de l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de récupérer l'utilisateur")
-    }
-};
-
-export const addUser = (user: NewUser) => {
-    try {
-        return db.insert(users).values(user).returning({ id: users.id }).execute();
-    } catch (err: any) {
-        logger.error(`Erreur lors de la création de l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de créer l'utilisateur")
-    }
-};
-
-export const updateUser = (user: Partial<User> & { id: string }) => {
-    try {
-        return db.update(users).set(user).where(
-            eq(users.id, user.id)
-        ).execute();
-    } catch (err: any) {
-        logger.error(`Erreur lors de màj l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de màj l'u'tilisateur")
-    }
-}

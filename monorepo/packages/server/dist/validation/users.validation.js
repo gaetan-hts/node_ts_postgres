@@ -9,9 +9,8 @@ exports.userValidation = zod_1.z.object({
         .regex(/[0-9]/, { message: "Le mot de passe doit contenir au moins un chiffre" })
         .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: "Le mot de passe doit contenir au moins un symbole" }),
     email: zod_1.z.string()
-        .email({ message: "Adresse email invalide" })
-    /* .refine(async (email): boolean => {
-        // On vérifie que l'email est unique dans la db par exemple
-        // C'est une fonction pour faire ses verifications "custom"
-    }) */
+        .email({ message: "Adresse email invalide" }),
+    dateOfBirth: zod_1.z.string()
+        .refine((date) => !isNaN(Date.parse(date)), { message: "Date de naissance invalide" }), // Ensure it's a valid date
+    isMale: zod_1.z.boolean(), // Ensure it's a boolean value, true or false
 });

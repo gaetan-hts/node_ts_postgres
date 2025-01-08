@@ -1,6 +1,7 @@
 export * from "./users";
-export * from "./posts"
-export * from "./comments";
+export * from "./matches";
+export * from "./tournaments";
+export * from "./participants";
 
 
 

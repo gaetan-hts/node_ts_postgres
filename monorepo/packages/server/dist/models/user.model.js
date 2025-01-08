@@ -1,92 +1,45 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.addUser = exports.findByCredentials = exports.getUserById = exports.getAllUsers = void 0;
-const pool_1 = require("../config/pool");
+exports.getUser = exports.getUsers = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
-const schemas_1 = require("../schemas");
+const pool_1 = require("../config/pool");
+const users_1 = require("../schemas/users");
 const utils_1 = require("../utils");
-// Ce fichier de model corresponds à une écriture + ancienne de drizzle (method objets pour les requetes)
-const getAllUsers = () => {
+// Get all users
+const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return pool_1.db.query.users.findMany({
-            columns: {
-                id: true,
-                username: true
-            }
-        });
+        const usersList = yield pool_1.db.select().from(users_1.users);
+        return usersList;
     }
-    catch (err) {
-        utils_1.logger.error(`Erreur lors de la récupération des utilisateurs; ${err.message}`);
-        throw new Error("Impossible de récupérer les utilisateurs");
+    catch (error) {
+        utils_1.logger.error(`Error fetching users: ${error.message}`);
+        throw new Error("Error fetching users");
     }
-};
-exports.getAllUsers = getAllUsers;
-const getUserById = (id) => {
+});
+exports.getUsers = getUsers;
+// Get a user by ID
+const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return pool_1.db.query.users.findFirst({
-            where: (0, drizzle_orm_1.eq)(schemas_1.users.id, id),
-            columns: {
-                id: true,
-                username: true
-            },
-            with: {
-                comments: {
-                    columns: {
-                        id: true,
-                        content: true,
-                    }
-                },
-                posts: {
-                    columns: {
-                        id: true,
-                        title: true
-                    }
-                }
-            }
-        });
-        // En SQL ca donnerait:
-        // SELECT id, username, comments.id, comments.content, posts.id, posts.title FROM users WHERE id = 'id' LEFT JOIN comments ON users.id = comments.author LEFT JOIN posts ON users.id = posts.author_id;
+        const user = yield pool_1.db
+            .select()
+            .from(users_1.users)
+            .where((0, drizzle_orm_1.eq)(users_1.users.id, id))
+            .limit(1)
+            .then(results => results[0]);
+        return user;
     }
-    catch (err) {
-        utils_1.logger.error(`Erreur lors de la récupération de l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de récupérer l'utilisateur");
+    catch (error) {
+        utils_1.logger.error(`Error fetching user by ID: ${error.message}`);
+        throw new Error("Error fetching user by ID");
     }
-};
-exports.getUserById = getUserById;
-const findByCredentials = (username) => {
-    try {
-        return pool_1.db.query.users.findFirst({
-            where: (0, drizzle_orm_1.eq)(schemas_1.users.username, username),
-            columns: {
-                id: true,
-                username: true,
-                password: true
-            }
-        });
-    }
-    catch (err) {
-        utils_1.logger.error(`Erreur lors de la récupération de l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de récupérer l'utilisateur");
-    }
-};
-exports.findByCredentials = findByCredentials;
-const addUser = (user) => {
-    try {
-        return pool_1.db.insert(schemas_1.users).values(user).returning({ id: schemas_1.users.id }).execute();
-    }
-    catch (err) {
-        utils_1.logger.error(`Erreur lors de la création de l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de créer l'utilisateur");
-    }
-};
-exports.addUser = addUser;
-const updateUser = (user) => {
-    try {
-        return pool_1.db.update(schemas_1.users).set(user).where((0, drizzle_orm_1.eq)(schemas_1.users.id, user.id)).execute();
-    }
-    catch (err) {
-        utils_1.logger.error(`Erreur lors de màj l'utilisateur; ${err.message}`);
-        throw new Error("Impossible de màj l'u'tilisateur");
-    }
-};
-exports.updateUser = updateUser;
+});
+exports.getUser = getUser;
