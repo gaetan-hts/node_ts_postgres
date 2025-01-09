@@ -1,16 +1,16 @@
 import { Router } from "express";
-import { getMatch, getMatches, createMatch, updateMatch, deleteMatch } from "../controllers/match.controller";
+import { getMatch, updateMatch, deleteMatch, createNewMatch, getMatchesByTournament } from "../controllers/match.controller";
 
 const router = Router();
 
 // [GET] Get all matches
-router.get('/', getMatches);
+router.get('/tournament/:id', getMatchesByTournament);
 
 // [GET] Get a specific match by ID
 router.get('/:id', getMatch);
 
 // [POST] Create a new match
-router.post('/', createMatch);
+router.post('/', createNewMatch);
 
 // [PUT] Update a match's result or data
 router.put('/:id', updateMatch);

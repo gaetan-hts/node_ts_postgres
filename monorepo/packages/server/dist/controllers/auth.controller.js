@@ -18,28 +18,40 @@ const zod_1 = require("zod");
 const env_1 = require("../config/env");
 const utils_1 = require("../utils");
 const users_validation_1 = require("../validation/users.validation");
-const user_model_1 = require("../models/user.model");
+const auth_models_1 = require("../models/auth.models");
 const { NODE_ENV, JWT_SECRET } = env_1.env;
 const register = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, username } = users_validation_1.userValidation.parse(request.body);
-        const emailAlreadyExists = yield (0, user_model_1.findByCredentials)(email);
+        const { email, password, username, dateOfBirth, isMale } = users_validation_1.userValidation.parse(request.body);
+        // Vérifie si l'email est déjà utilisé
+        const emailAlreadyExists = yield (0, auth_models_1.findByCredentials)(email);
         if (emailAlreadyExists)
             return (0, utils_1.APIResponse)(response, [], "Cet email est déjà utilisé", 400);
-        const hash = yield (0, utils_1.hashPassword)(password);
-        if (!hash)
+        // Hachage du mot de passe
+        const hashedPassword = yield (0, utils_1.hashPassword)(password);
+        if (!hashedPassword)
             throw new Error("Erreur lors du hashage du mot de passe");
-        const [newUser] = yield (0, user_model_1.addUser)({ username, email, password: hash });
-        if (!newUser)
+        // Ajout de l'utilisateur
+        const newUser = yield (0, auth_models_1.addUser)({
+            username,
+            email,
+            password: hashedPassword,
+            dateOfBirth,
+            isMale
+        });
+        if (!newUser) {
             return (0, utils_1.APIResponse)(response, [], "Erreur lors de la création de l'utilisateur", 500);
+        }
+        // Réponse avec l'ID du nouvel utilisateur
         return (0, utils_1.APIResponse)(response, newUser.id, "Vous êtes inscrit", 200);
     }
     catch (err) {
         utils_1.logger.error(`Erreur lors de l'inscription de l'utilisateur: ${err.message}`);
+        // Retourne les erreurs de validation si présentes
         if (err instanceof zod_1.z.ZodError) {
-            // ici on retourne les erreurs de validation
             return (0, utils_1.APIResponse)(response, err.errors, "Formulaire incorrect", 400);
         }
+        // Réponse en cas d'erreur serveur
         (0, utils_1.APIResponse)(response, null, "Erreur serveur", 500);
     }
 });
@@ -47,7 +59,7 @@ exports.register = register;
 const login = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = request.body;
-        const user = yield (0, user_model_1.findByCredentials)(email);
+        const user = yield (0, auth_models_1.findByCredentials)(email);
         if (!user)
             return (0, utils_1.APIResponse)(response, [], "Email ou mot de passe invalide", 400);
         // vérification du mot de passe

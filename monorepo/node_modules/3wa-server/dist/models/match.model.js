@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMatchById = exports.updateMatchResult = exports.createMatch = exports.getMatchById = void 0;
+exports.deleteMatchById = exports.updateMatchResult = exports.createMatch = exports.getMatchesByTournamentId = exports.getMatchById = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
 const pool_1 = require("../config/pool");
 const matches_1 = require("../schemas/matches"); // Your schema for matches
@@ -30,6 +30,21 @@ const getMatchById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getMatchById = getMatchById;
+// Fetch matches by tournament ID
+const getMatchesByTournamentId = (tournamentId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const tournamentMatches = yield pool_1.db
+            .select()
+            .from(matches_1.matches)
+            .where((0, drizzle_orm_1.eq)(matches_1.matches.tournamentId, tournamentId));
+        return tournamentMatches;
+    }
+    catch (error) {
+        utils_1.logger.error(`Error fetching matches by tournament ID: ${error.message}`);
+        throw new Error(`Error fetching matches by tournament ID: ${error.message}`);
+    }
+});
+exports.getMatchesByTournamentId = getMatchesByTournamentId;
 const createMatch = (matchData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { tournamentId, player1Id, player2Id, result, matchType } = matchData;

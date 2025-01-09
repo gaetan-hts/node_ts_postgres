@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMatch = exports.updateMatch = exports.createNewMatch = exports.getMatch = void 0;
+exports.deleteMatch = exports.updateMatch = exports.createNewMatch = exports.getMatchesByTournament = exports.getMatch = void 0;
 const match_model_1 = require("../models/match.model");
 const utils_1 = require("../utils");
 const getMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,6 +29,24 @@ const getMatch = (request, response) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getMatch = getMatch;
+// Get matches by tournament ID
+const getMatchesByTournament = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const { tournamentId } = request.params;
+    try {
+        const matches = yield (0, match_model_1.getMatchesByTournamentId)(tournamentId);
+        if (matches.length > 0) {
+            (0, utils_1.APIResponse)(response, matches, "Matches retrieved successfully");
+        }
+        else {
+            (0, utils_1.APIResponse)(response, null, "No matches found for this tournament", 404);
+        }
+    }
+    catch (error) {
+        utils_1.logger.error(`Error fetching matches by tournament ID: ${error.message}`);
+        (0, utils_1.APIResponse)(response, null, "Error fetching matches by tournament ID", 500);
+    }
+});
+exports.getMatchesByTournament = getMatchesByTournament;
 const createNewMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { tournamentId, player1Id, player2Id, result, matchType } = request.body;
     try {
@@ -42,10 +60,10 @@ const createNewMatch = (request, response) => __awaiter(void 0, void 0, void 0, 
 });
 exports.createNewMatch = createNewMatch;
 const updateMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { matchId } = request.params;
+    const { id } = request.params;
     const { result } = request.body;
     try {
-        const updatedMatch = yield (0, match_model_1.updateMatchResult)(matchId, result);
+        const updatedMatch = yield (0, match_model_1.updateMatchResult)(id, result);
         if (updatedMatch) {
             (0, utils_1.APIResponse)(response, updatedMatch, "Match result updated successfully");
         }

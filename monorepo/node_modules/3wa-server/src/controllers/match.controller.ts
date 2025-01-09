@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getMatchById, createMatch, updateMatchResult, deleteMatchById } from "../models/match.model";
+import { getMatchById, createMatch, updateMatchResult, deleteMatchById, getMatchesByTournamentId } from "../models/match.model";
 import { APIResponse, logger } from "../utils";
 
 export const getMatch = async (request: Request, response: Response) => {
@@ -14,6 +14,22 @@ export const getMatch = async (request: Request, response: Response) => {
     } catch (error: any) {
         logger.error(`Error fetching match by ID: ${error.message}`);
         APIResponse(response, null, "Error fetching match by ID", 500);
+    } 
+};
+
+// Get matches by tournament ID
+export const getMatchesByTournament = async (request: Request, response: Response) => {
+    const { tournamentId } = request.params;
+    try {
+        const matches = await getMatchesByTournamentId(tournamentId);
+        if (matches.length > 0) {
+            APIResponse(response, matches, "Matches retrieved successfully");
+        } else {
+            APIResponse(response, null, "No matches found for this tournament", 404);
+        }
+    } catch (error: any) {
+        logger.error(`Error fetching matches by tournament ID: ${error.message}`);
+        APIResponse(response, null, "Error fetching matches by tournament ID", 500);
     }
 };
 
@@ -29,10 +45,11 @@ export const createNewMatch = async (request: Request, response: Response) => {
 };
 
 export const updateMatch = async (request: Request, response: Response) => {
-    const { matchId } = request.params;
+    const { id } = request.params;
     const { result } = request.body;
+    
     try {
-        const updatedMatch = await updateMatchResult(matchId, result);
+        const updatedMatch = await updateMatchResult(id, result);
         if (updatedMatch) {
             APIResponse(response, updatedMatch, "Match result updated successfully");
         } else {

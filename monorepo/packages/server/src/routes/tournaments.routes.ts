@@ -1,16 +1,16 @@
 import { Router } from "express";
-import { getTournament, getTournaments, createTournament, updateTournament, deleteTournament } from "../controllers/tournament.controller";
+import { createNewTournament, deleteTournament, fetchAllTournaments, fetchTournamentById, updateTournament} from "../controllers/tournament.controller";
 
 const router = Router();
 
 // [GET] Get all tournaments
-router.get('/', getTournaments);
+router.get('/', fetchAllTournaments);
 
 // [GET] Get a specific tournament by ID
-router.get('/:id', getTournament);
+router.get('/:id', fetchTournamentById);
 
 // [POST] Create a new tournament
-router.post('/', createTournament);
+router.post('/', createNewTournament);
 
 // [PUT] Update a tournament's data
 router.put('/:id', updateTournament);

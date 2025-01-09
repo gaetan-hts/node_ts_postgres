@@ -7,6 +7,6 @@ const router = (0, express_1.Router)();
 router.post('/register', auth_controller_1.register);
 // [POST] http://localhost:3000/auth/login
 router.post('/login', auth_controller_1.login);
-// [POST] http://localhost:3000/auth/logout
+// [GET] http://localhost:3000/auth/logout
 router.get('/logout', auth_controller_1.logout);
 exports.default = router;

@@ -43,7 +43,11 @@ function hashPassword(password) {
 function verifyPassword(hashedPassword, inputPassword) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            return yield argon2_1.default.verify(hashedPassword, inputPassword);
+            console.log(hashedPassword);
+            console.log(inputPassword);
+            const result = yield argon2_1.default.verify(hashedPassword, inputPassword);
+            console.log(result);
+            return result;
         }
         catch (err) {
             console.error('Erreur lors de la vérification: ', err);

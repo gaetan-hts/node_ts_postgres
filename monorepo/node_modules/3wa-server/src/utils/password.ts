@@ -28,7 +28,13 @@ export async function hashPassword(password: string): Promise<string | void> {
 // On vérifie que le mot de passe hashé et en clair matches bien
 export async function verifyPassword(hashedPassword: string, inputPassword: string): Promise<boolean> {
     try {
-        return await argon2.verify(hashedPassword, inputPassword);
+        console.log(hashedPassword);
+        console.log(inputPassword);
+
+        const result = await argon2.verify(hashedPassword, inputPassword);
+        console.log(result);
+        return result
+        
     } catch (err) {
         console.error('Erreur lors de la vérification: ', err);
         return false;

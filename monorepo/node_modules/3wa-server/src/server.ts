@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 
-import routes from "./routes/index.routes";
 import { env } from "./config/env";
+import router from "./routes/index.routes";
 
 // Creation instance app express
 const app = express();
@@ -23,7 +23,7 @@ app.use(express.json()); // le payload (le body) de la req sera accessible dans 
 app.use(express.urlencoded({extended: true})); // lire le body lorsque le payload sera de type form-data-urlencoded (formulaire)
 
 // J'utilise le router défini dans routes/index.routes.ts pour gérer les routes de mon application de façon globale
-app.use(routes);
+app.use(router);
 
 app.listen(PORT, () => {
     console.log(`Serveur lancé sur http://localhost:${PORT}`);

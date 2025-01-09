@@ -9,11 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTournamentByIdController = exports.updateTournamentStatusController = exports.getTournamentByIdController = exports.getAllTournamentsController = exports.createTournamentController = void 0;
+exports.deleteTournament = exports.updateTournament = exports.fetchTournamentById = exports.fetchAllTournaments = exports.createNewTournament = void 0;
 const utils_1 = require("../utils");
 const tournament_models_1 = require("../models/tournament.models");
 // Create a new tournament
-const createTournamentController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createNewTournament = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Validating the incoming data before creating the tournament
         const newTournament = yield (0, tournament_models_1.createTournament)(req.body);
@@ -23,9 +23,9 @@ const createTournamentController = (req, res) => __awaiter(void 0, void 0, void 
         return (0, utils_1.APIResponse)(res, null, error.message, 500);
     }
 });
-exports.createTournamentController = createTournamentController;
+exports.createNewTournament = createNewTournament;
 // Get all tournaments
-const getAllTournamentsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchAllTournaments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tournamentsList = yield (0, tournament_models_1.getAllTournaments)();
         return (0, utils_1.APIResponse)(res, tournamentsList, "Tournaments fetched successfully", 200);
@@ -34,9 +34,9 @@ const getAllTournamentsController = (req, res) => __awaiter(void 0, void 0, void
         return (0, utils_1.APIResponse)(res, null, error.message, 500);
     }
 });
-exports.getAllTournamentsController = getAllTournamentsController;
+exports.fetchAllTournaments = fetchAllTournaments;
 // Get a tournament by ID
-const getTournamentByIdController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchTournamentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         const tournament = yield (0, tournament_models_1.getTournamentById)(id);
@@ -49,9 +49,9 @@ const getTournamentByIdController = (req, res) => __awaiter(void 0, void 0, void
         return (0, utils_1.APIResponse)(res, null, error.message, 500);
     }
 });
-exports.getTournamentByIdController = getTournamentByIdController;
+exports.fetchTournamentById = fetchTournamentById;
 // Update tournament status
-const updateTournamentStatusController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTournament = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         const { status } = req.body;
@@ -62,9 +62,9 @@ const updateTournamentStatusController = (req, res) => __awaiter(void 0, void 0,
         return (0, utils_1.APIResponse)(res, null, error.message, 500);
     }
 });
-exports.updateTournamentStatusController = updateTournamentStatusController;
+exports.updateTournament = updateTournament;
 // Delete a tournament by ID
-const deleteTournamentByIdController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTournament = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         yield (0, tournament_models_1.deleteTournamentById)(id);
@@ -74,4 +74,4 @@ const deleteTournamentByIdController = (req, res) => __awaiter(void 0, void 0, v
         return (0, utils_1.APIResponse)(res, null, error.message, 500);
     }
 });
-exports.deleteTournamentByIdController = deleteTournamentByIdController;
+exports.deleteTournament = deleteTournament;

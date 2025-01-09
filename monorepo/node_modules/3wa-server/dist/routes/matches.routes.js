@@ -4,11 +4,11 @@ const express_1 = require("express");
 const match_controller_1 = require("../controllers/match.controller");
 const router = (0, express_1.Router)();
 // [GET] Get all matches
-router.get('/', match_controller_1.getMatches);
+router.get('/tournament/:id', match_controller_1.getMatchesByTournament);
 // [GET] Get a specific match by ID
 router.get('/:id', match_controller_1.getMatch);
 // [POST] Create a new match
-router.post('/', match_controller_1.createMatch);
+router.post('/', match_controller_1.createNewMatch);
 // [PUT] Update a match's result or data
 router.put('/:id', match_controller_1.updateMatch);
 // [DELETE] Delete a match

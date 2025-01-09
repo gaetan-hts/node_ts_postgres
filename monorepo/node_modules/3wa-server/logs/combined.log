@@ -1,0 +1,81 @@
+09-01-2025 15:22:47 [[31merror[39m]: Erreur lors de l'inscription de l'utilisateur: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "username"
+    ],
+    "message": "Required"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "password"
+    ],
+    "message": "Required"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "email"
+    ],
+    "message": "Required"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "dateOfBirth"
+    ],
+    "message": "Required"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "boolean",
+    "received": "undefined",
+    "path": [
+      "isMale"
+    ],
+    "message": "Required"
+  }
+]
+09-01-2025 15:26:29 [[31merror[39m]: Erreur lors de l'inscription de l'utilisateur: [
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Le mot de passe doit contenir au moins un symbole",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "custom",
+    "message": "Date de naissance invalide",
+    "path": [
+      "dateOfBirth"
+    ]
+  }
+]
+09-01-2025 15:26:37 [[31merror[39m]: Erreur lors de l'inscription de l'utilisateur: [
+  {
+    "code": "custom",
+    "message": "Date de naissance invalide",
+    "path": [
+      "dateOfBirth"
+    ]
+  }
+]
+09-01-2025 16:19:12 [[31merror[39m]: Error fetching user by ID: syntaxe en entrée invalide pour le type uuid : « 1 »
+09-01-2025 16:19:12 [[31merror[39m]: Erreur lors de la récupération de l'utilisateur: Error fetching user by ID
+09-01-2025 16:19:18 [[31merror[39m]: Error fetching user by ID: syntaxe en entrée invalide pour le type uuid : « 2 »
+09-01-2025 16:19:18 [[31merror[39m]: Erreur lors de la récupération de l'utilisateur: Error fetching user by ID
+09-01-2025 16:19:54 [[31merror[39m]: Error fetching user by ID: syntaxe en entrée invalide pour le type uuid : « 2 »
+09-01-2025 16:19:54 [[31merror[39m]: Erreur lors de la récupération de l'utilisateur: Error fetching user by ID
+09-01-2025 16:32:41 [[31merror[39m]: Error updating tournament status: No values to set
+09-01-2025 16:45:21 [[31merror[39m]: Error creating tournament: une valeur NULL viole la contrainte NOT NULL de la colonne « name » dans la relation « tournaments »

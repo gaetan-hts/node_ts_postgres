@@ -19,6 +19,21 @@ export const getMatchById = async (id: string) => {
     }
 };
 
+// Fetch matches by tournament ID
+export const getMatchesByTournamentId = async (tournamentId: string) => {
+    try {
+        const tournamentMatches = await db
+            .select()
+            .from(matches)
+            .where(eq(matches.tournamentId, tournamentId));
+
+        return tournamentMatches;
+    } catch (error: any) {
+        logger.error(`Error fetching matches by tournament ID: ${error.message}`);
+        throw new Error(`Error fetching matches by tournament ID: ${error.message}`);
+    }
+};
+
 export const createMatch = async (matchData: {
     tournamentId: string;
     player1Id: string;

@@ -6,43 +6,60 @@ import { env } from "../config/env";
 
 import { APIResponse, hashPassword, logger, verifyPassword } from "../utils";
 import { userValidation } from "../validation/users.validation"
-import { addUser, findByCredentials } from "../models/user.model";
+import { addUser, findByCredentials } from "../models/auth.models";
 
 const { NODE_ENV, JWT_SECRET } = env;
 
 export const register = async (request: Request, response: Response) => {
     try {
-        const { email, password, username } = userValidation.parse(request.body);
+        const { email, password, username, dateOfBirth, isMale } = userValidation.parse(request.body);
+
+        // Vérifie si l'email est déjà utilisé
         const emailAlreadyExists = await findByCredentials(email);
         if (emailAlreadyExists)
             return APIResponse(response, [], "Cet email est déjà utilisé", 400);
 
-        const hash = await hashPassword(password);
-        if (!hash)
+        // Hachage du mot de passe
+        const hashedPassword = await hashPassword(password);
+        if (!hashedPassword)
             throw new Error("Erreur lors du hashage du mot de passe");
 
-        const [ newUser ] = await addUser({ username, email, password: hash });
-        if (!newUser)
-            return APIResponse(response, [], "Erreur lors de la création de l'utilisateur", 500); 
+        // Ajout de l'utilisateur
+        const newUser = await addUser({
+            username,
+            email,
+            password: hashedPassword,
+            dateOfBirth,
+            isMale
+        });
 
+        if (!newUser) {
+            return APIResponse(response, [], "Erreur lors de la création de l'utilisateur", 500);
+        }
+
+        // Réponse avec l'ID du nouvel utilisateur
         return APIResponse(response, newUser.id, "Vous êtes inscrit", 200);
     } catch (err: any) {
-        logger.error(`Erreur lors de l'inscription de l'utilisateur: ${err.message}`)
+        logger.error(`Erreur lors de l'inscription de l'utilisateur: ${err.message}`);
+
+        // Retourne les erreurs de validation si présentes
         if (err instanceof z.ZodError) {
-            // ici on retourne les erreurs de validation
-            return APIResponse(response, err.errors, "Formulaire incorrect", 400)
+            return APIResponse(response, err.errors, "Formulaire incorrect", 400);
         }
+
+        // Réponse en cas d'erreur serveur
         APIResponse(response, null, "Erreur serveur", 500);
     }
-}
+};
 
 export const login = async (request: Request, response: Response) => {
     try {
         const { email, password } = request.body;
         const user = await findByCredentials(email);
+
         if (!user)
             return APIResponse(response, [], "Email ou mot de passe invalide", 400);
-
+        
         // vérification du mot de passe
         if (await verifyPassword(user.password, password) === false) {
             return APIResponse(response, [], "Email ou mot de passe invalide", 400);

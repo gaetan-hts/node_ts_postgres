@@ -4,7 +4,7 @@ import { APIResponse } from "../utils";
 import { createTournament, deleteTournamentById, getAllTournaments, getTournamentById, updateTournamentStatus } from "../models/tournament.models";
 
 // Create a new tournament
-export const createTournamentController = async (req: Request, res: Response) => {
+export const createNewTournament = async (req: Request, res: Response) => {
     try {
         // Validating the incoming data before creating the tournament
         const newTournament = await createTournament(req.body);
@@ -15,7 +15,7 @@ export const createTournamentController = async (req: Request, res: Response) =>
 };
 
 // Get all tournaments
-export const getAllTournamentsController = async (req: Request, res: Response) => {
+export const fetchAllTournaments = async (req: Request, res: Response) => {
     try {
         const tournamentsList = await getAllTournaments();
         return APIResponse(res, tournamentsList, "Tournaments fetched successfully", 200);
@@ -25,7 +25,7 @@ export const getAllTournamentsController = async (req: Request, res: Response) =
 };
 
 // Get a tournament by ID
-export const getTournamentByIdController = async (req: Request, res: Response) => {
+export const fetchTournamentById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const tournament = await getTournamentById(id);
@@ -39,7 +39,7 @@ export const getTournamentByIdController = async (req: Request, res: Response) =
 };
 
 // Update tournament status
-export const updateTournamentStatusController = async (req: Request, res: Response) => {
+export const updateTournament = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
@@ -51,7 +51,7 @@ export const updateTournamentStatusController = async (req: Request, res: Respon
 };
 
 // Delete a tournament by ID
-export const deleteTournamentByIdController = async (req: Request, res: Response) => {
+export const deleteTournament = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         await deleteTournamentById(id);
