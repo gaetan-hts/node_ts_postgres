@@ -11,6 +11,9 @@ exports.userValidation = zod_1.z.object({
     email: zod_1.z.string()
         .email({ message: "Adresse email invalide" }),
     dateOfBirth: zod_1.z.string()
-        .refine((date) => !isNaN(Date.parse(date)), { message: "Date de naissance invalide" }), // Ensure it's a valid date
-    isMale: zod_1.z.boolean(), // Ensure it's a boolean value, true or false
+        .refine((date) => !isNaN(Date.parse(date)), { message: "Date de naissance invalide" }), // aaaa-mm-dd
+    isMale: zod_1.z.boolean(),
+    eloBullet: zod_1.z.number().optional(),
+    eloBlitz: zod_1.z.number().optional(),
+    eloRapid: zod_1.z.number().optional(),
 });

@@ -1,8 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../config/pool";
-import { matches } from "../schemas/matches"; // Your schema for matches
+import { matches } from "../schemas/matches";
 import { logger } from "../utils";
 
+// Fetch match by ID
 export const getMatchById = async (id: string) => {
     try {
         const match = await db
@@ -34,6 +35,7 @@ export const getMatchesByTournamentId = async (tournamentId: string) => {
     }
 };
 
+// Create new Match
 export const createMatch = async (matchData: {
     tournamentId: string;
     player1Id: string;
@@ -55,13 +57,14 @@ export const createMatch = async (matchData: {
             })
             .returning();
 
-        return newMatch[0]; // Returning the inserted match object
+        return newMatch[0];
     } catch (error: any) {
         logger.error(`Error creating match: ${error.message}`);
         throw new Error("Error creating match");
     }
 };
 
+// Update match result by ID
 export const updateMatchResult = async (matchId: string, result: string) => {
     try {
         const updatedMatch = await db
@@ -70,16 +73,16 @@ export const updateMatchResult = async (matchId: string, result: string) => {
             .where(eq(matches.id, matchId))
             .returning();
 
-        return updatedMatch[0]; // Returning the updated match object
+        return updatedMatch[0];
     } catch (error: any) {
         logger.error(`Error updating match result: ${error.message}`);
         throw new Error("Error updating match result");
     }
 };
 
+// delete Match by ID
 export const deleteMatchById = async (id: string, userId: string) => {
     try {
-        // Assuming that matches have a userId field or a relationship to track who owns the match
         const deletedMatch = await db
             .delete(matches)
             .where(
@@ -90,7 +93,7 @@ export const deleteMatchById = async (id: string, userId: string) => {
                 )
             );
 
-        return deletedMatch; // Returning deleted match result
+        return deletedMatch;
     } catch (err: any) {
         logger.error("Error deleting match: " + err.message);
         throw new Error("Match could not be deleted");

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getUsers, getUser } from "../models/user.model";
 import { APIResponse, logger } from "../utils";
 
-// Récupérer tous les utilisateurs
+// Fetch all users
 export const getAllUsers = async (request: Request, response: Response) => {
     try {
         const users = await getUsers();
@@ -13,7 +13,7 @@ export const getAllUsers = async (request: Request, response: Response) => {
     }
 };
 
-// Récupérer un utilisateur par ID
+// Fetch user by his ID
 export const getUserById = async (request: Request, response: Response) => {
     const { id } = request.params;
 

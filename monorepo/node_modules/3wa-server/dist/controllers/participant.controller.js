@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTournamentParticipants = exports.deleteParticipant = exports.addNewParticipant = void 0;
 const participant_model_1 = require("../models/participant.model");
 const utils_1 = require("../utils");
-// Ajouter un participant
+// Create new participant
 const addNewParticipant = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { tournamentId, userId } = request.body;
     try {
@@ -25,7 +25,7 @@ const addNewParticipant = (request, response) => __awaiter(void 0, void 0, void 
     }
 });
 exports.addNewParticipant = addNewParticipant;
-// Supprimer un participant
+// Delete participant by ID
 const deleteParticipant = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = request.params;
     try {
@@ -43,7 +43,7 @@ const deleteParticipant = (request, response) => __awaiter(void 0, void 0, void 
     }
 });
 exports.deleteParticipant = deleteParticipant;
-// Récupérer les participants d'un tournoi
+// Fetch all participants by tournament ID
 const getTournamentParticipants = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { tournamentId } = request.params;
     try {

@@ -12,8 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMatchById = exports.updateMatchResult = exports.createMatch = exports.getMatchesByTournamentId = exports.getMatchById = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
 const pool_1 = require("../config/pool");
-const matches_1 = require("../schemas/matches"); // Your schema for matches
+const matches_1 = require("../schemas/matches");
 const utils_1 = require("../utils");
+// Fetch match by ID
 const getMatchById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const match = yield pool_1.db
@@ -45,6 +46,7 @@ const getMatchesByTournamentId = (tournamentId) => __awaiter(void 0, void 0, voi
     }
 });
 exports.getMatchesByTournamentId = getMatchesByTournamentId;
+// Create new Match
 const createMatch = (matchData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { tournamentId, player1Id, player2Id, result, matchType } = matchData;
@@ -58,7 +60,7 @@ const createMatch = (matchData) => __awaiter(void 0, void 0, void 0, function* (
             matchType
         })
             .returning();
-        return newMatch[0]; // Returning the inserted match object
+        return newMatch[0];
     }
     catch (error) {
         utils_1.logger.error(`Error creating match: ${error.message}`);
@@ -66,6 +68,7 @@ const createMatch = (matchData) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.createMatch = createMatch;
+// Update match result by ID
 const updateMatchResult = (matchId, result) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const updatedMatch = yield pool_1.db
@@ -73,7 +76,7 @@ const updateMatchResult = (matchId, result) => __awaiter(void 0, void 0, void 0,
             .set({ result })
             .where((0, drizzle_orm_1.eq)(matches_1.matches.id, matchId))
             .returning();
-        return updatedMatch[0]; // Returning the updated match object
+        return updatedMatch[0];
     }
     catch (error) {
         utils_1.logger.error(`Error updating match result: ${error.message}`);
@@ -81,13 +84,13 @@ const updateMatchResult = (matchId, result) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.updateMatchResult = updateMatchResult;
+// delete Match by ID
 const deleteMatchById = (id, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Assuming that matches have a userId field or a relationship to track who owns the match
         const deletedMatch = yield pool_1.db
             .delete(matches_1.matches)
             .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(matches_1.matches.id, id), (0, drizzle_orm_1.eq)(matches_1.matches.player1Id, userId), (0, drizzle_orm_1.eq)(matches_1.matches.player2Id, userId)));
-        return deletedMatch; // Returning deleted match result
+        return deletedMatch;
     }
     catch (err) {
         utils_1.logger.error("Error deleting match: " + err.message);

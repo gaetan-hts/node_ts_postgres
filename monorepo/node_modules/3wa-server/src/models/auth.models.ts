@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "../config/pool";
-import { users } from "../schemas/users"; // User schema
-import { hashPassword, verifyPassword } from "../utils"; // Password utilities
+import { users } from "../schemas/users";
+import { hashPassword, verifyPassword } from "../utils";
 import { logger } from "../utils";
 
 // Method to find a user by email (used for login)
@@ -60,7 +60,7 @@ export const addUser = async (userData: {
     }
 };
 
-// Method to authenticate and log in a user by verifying email and password
+// Login
 export const authenticateUser = async (email: string, password: string) => {
     try {
         const user = await findByCredentials(email);
@@ -74,7 +74,7 @@ export const authenticateUser = async (email: string, password: string) => {
             throw new Error("Email or password is incorrect");
         }
 
-        return user; // Return the authenticated user
+        return user;
     } catch (error: any) {
         logger.error(`Error during user authentication: ${error.message}`);
         throw new Error("Authentication failed");

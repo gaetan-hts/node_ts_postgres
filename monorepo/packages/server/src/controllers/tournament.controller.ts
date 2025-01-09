@@ -6,7 +6,6 @@ import { createTournament, deleteTournamentById, getAllTournaments, getTournamen
 // Create a new tournament
 export const createNewTournament = async (req: Request, res: Response) => {
     try {
-        // Validating the incoming data before creating the tournament
         const newTournament = await createTournament(req.body);
         return APIResponse(res, newTournament, "Tournament created successfully", 201);
     } catch (error: any) {
@@ -24,7 +23,7 @@ export const fetchAllTournaments = async (req: Request, res: Response) => {
     }
 };
 
-// Get a tournament by ID
+// Get tournament by ID
 export const fetchTournamentById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -50,7 +49,7 @@ export const updateTournament = async (req: Request, res: Response) => {
     }
 };
 
-// Delete a tournament by ID
+// Delete tournament by ID
 export const deleteTournament = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;

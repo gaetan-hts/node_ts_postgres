@@ -1,15 +1,16 @@
 import { Router } from "express";
 import { addNewParticipant, deleteParticipant, getTournamentParticipants } from "../controllers/participant.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-// [GET] Get all participants by tournament 
+// [GET] http://localhost:3000/participant/:id
 router.get('/:id', getTournamentParticipants);
 
-// [POST] Create a new participant
-router.post('/', addNewParticipant);
+// [POST] http://localhost:3000/participant
+router.post('/', [authMiddleware], addNewParticipant);
 
-// [DELETE] Delete a participant
+// [DELETE] http://localhost:3000/participant/:id
 router.delete('/:id', deleteParticipant);
 
 export default router;

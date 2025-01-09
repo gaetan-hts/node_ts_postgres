@@ -1,21 +1,21 @@
 import { Router } from "express";
-import { createNewTournament, deleteTournament, fetchAllTournaments, fetchTournamentById, updateTournament} from "../controllers/tournament.controller";
+import { createNewTournament, deleteTournament, fetchAllTournaments, fetchTournamentById, updateTournament } from "../controllers/tournament.controller";
 
 const router = Router();
 
-// [GET] Get all tournaments
+// [GET] http://localhost:3000/tournament
 router.get('/', fetchAllTournaments);
 
-// [GET] Get a specific tournament by ID
+// [GET] http://localhost:3000/tournament/:id
 router.get('/:id', fetchTournamentById);
 
-// [POST] Create a new tournament
+// [POST] http://localhost:3000/tournament
 router.post('/', createNewTournament);
 
-// [PUT] Update a tournament's data
+// [PUT] http://localhost:3000/tournament/:id
 router.put('/:id', updateTournament);
 
-// [DELETE] Delete a tournament
+// [DELETE] http://localhost:3000/tournament/:id
 router.delete('/:id', deleteTournament);
 
 export default router;

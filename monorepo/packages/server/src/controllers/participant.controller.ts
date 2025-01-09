@@ -1,4 +1,3 @@
-// controllers/participantController.ts
 import { Request, Response } from "express";
 import {
     addParticipant,
@@ -7,7 +6,7 @@ import {
 } from "../models/participant.model";
 import { APIResponse, logger } from "../utils";
 
-// Ajouter un participant
+// Create new participant
 export const addNewParticipant = async (request: Request, response: Response) => {
     const { tournamentId, userId } = request.body;
     try {
@@ -19,7 +18,7 @@ export const addNewParticipant = async (request: Request, response: Response) =>
     }
 };
 
-// Supprimer un participant
+// Delete participant by ID
 export const deleteParticipant = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
@@ -35,7 +34,7 @@ export const deleteParticipant = async (request: Request, response: Response) =>
     }
 };
 
-// Récupérer les participants d'un tournoi
+// Fetch all participants by tournament ID
 export const getTournamentParticipants = async (request: Request, response: Response) => {
     const { tournamentId } = request.params;
     try {

@@ -15,7 +15,6 @@ const tournament_models_1 = require("../models/tournament.models");
 // Create a new tournament
 const createNewTournament = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Validating the incoming data before creating the tournament
         const newTournament = yield (0, tournament_models_1.createTournament)(req.body);
         return (0, utils_1.APIResponse)(res, newTournament, "Tournament created successfully", 201);
     }
@@ -35,7 +34,7 @@ const fetchAllTournaments = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.fetchAllTournaments = fetchAllTournaments;
-// Get a tournament by ID
+// Get tournament by ID
 const fetchTournamentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -63,7 +62,7 @@ const updateTournament = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.updateTournament = updateTournament;
-// Delete a tournament by ID
+// Delete tournament by ID
 const deleteTournament = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

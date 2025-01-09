@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateUser = exports.addUser = exports.findByCredentials = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
 const pool_1 = require("../config/pool");
-const users_1 = require("../schemas/users"); // User schema
-const utils_1 = require("../utils"); // Password utilities
+const users_1 = require("../schemas/users");
+const utils_1 = require("../utils");
 const utils_2 = require("../utils");
 // Method to find a user by email (used for login)
 const findByCredentials = (email) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,7 +61,7 @@ const addUser = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addUser = addUser;
-// Method to authenticate and log in a user by verifying email and password
+// Login
 const authenticateUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield (0, exports.findByCredentials)(email);
@@ -73,7 +73,7 @@ const authenticateUser = (email, password) => __awaiter(void 0, void 0, void 0, 
         if (!passwordValid) {
             throw new Error("Email or password is incorrect");
         }
-        return user; // Return the authenticated user
+        return user;
     }
     catch (error) {
         utils_2.logger.error(`Error during user authentication: ${error.message}`);

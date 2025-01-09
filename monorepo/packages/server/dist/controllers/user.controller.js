@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserById = exports.getAllUsers = void 0;
 const user_model_1 = require("../models/user.model");
 const utils_1 = require("../utils");
-// Récupérer tous les utilisateurs
+// Fetch all users
 const getAllUsers = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield (0, user_model_1.getUsers)();
@@ -24,7 +24,7 @@ const getAllUsers = (request, response) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getAllUsers = getAllUsers;
-// Récupérer un utilisateur par ID
+// Fetch user by his ID
 const getUserById = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = request.params;
     try {

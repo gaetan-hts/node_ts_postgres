@@ -9,6 +9,9 @@ export const userValidation = z.object({
     email: z.string()
         .email({ message: "Adresse email invalide" }),
     dateOfBirth: z.string()
-        .refine((date) => !isNaN(Date.parse(date)), { message: "Date de naissance invalide" }), // Ensure it's a valid date
-    isMale: z.boolean(), // Ensure it's a boolean value, true or false
+        .refine((date) => !isNaN(Date.parse(date)), { message: "Date de naissance invalide" }), // aaaa-mm-dd
+    isMale: z.boolean(),
+    eloBullet: z.number().optional(),
+    eloBlitz: z.number().optional(),
+    eloRapid: z.number().optional(),
 });

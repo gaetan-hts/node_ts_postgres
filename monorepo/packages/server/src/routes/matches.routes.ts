@@ -3,19 +3,19 @@ import { getMatch, updateMatch, deleteMatch, createNewMatch, getMatchesByTournam
 
 const router = Router();
 
-// [GET] Get all matches
+// [GET] http://localhost:3000/match/tournament/:id
 router.get('/tournament/:id', getMatchesByTournament);
 
-// [GET] Get a specific match by ID
+// [GET] http://localhost:3000/match/:id
 router.get('/:id', getMatch);
 
-// [POST] Create a new match
+// [POST] http://localhost:3000/match
 router.post('/', createNewMatch);
 
-// [PUT] Update a match's result or data
+// [PUT] http://localhost:3000/match/:id
 router.put('/:id', updateMatch);
 
-// [DELETE] Delete a match
+// [DELETE] http://localhost:3000/match/:id
 router.delete('/:id', deleteMatch);
 
 export default router;

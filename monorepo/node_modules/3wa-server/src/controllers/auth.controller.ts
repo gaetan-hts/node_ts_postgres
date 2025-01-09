@@ -5,85 +5,101 @@ import { z } from "zod";
 import { env } from "../config/env";
 
 import { APIResponse, hashPassword, logger, verifyPassword } from "../utils";
-import { userValidation } from "../validation/users.validation"
+import { userValidation } from "../validation/users.validation";
 import { addUser, findByCredentials } from "../models/auth.models";
 
 const { NODE_ENV, JWT_SECRET } = env;
 
+// Register
 export const register = async (request: Request, response: Response) => {
     try {
-        const { email, password, username, dateOfBirth, isMale } = userValidation.parse(request.body);
+        const {
+          email,
+          password,
+          username,
+          dateOfBirth,
+          isMale,
+          eloBullet,
+          eloBlitz,
+          eloRapid,
+        } = userValidation.parse(request.body);
 
-        // Vérifie si l'email est déjà utilisé
+        // Check if the email is already in use
         const emailAlreadyExists = await findByCredentials(email);
         if (emailAlreadyExists)
-            return APIResponse(response, [], "Cet email est déjà utilisé", 400);
+            return APIResponse(response, [], "This email is already in use", 400);
 
-        // Hachage du mot de passe
+        // Hash the password
         const hashedPassword = await hashPassword(password);
         if (!hashedPassword)
-            throw new Error("Erreur lors du hashage du mot de passe");
+            throw new Error("Error hashing the password");
 
-        // Ajout de l'utilisateur
+        // Add the user to the database
         const newUser = await addUser({
             username,
             email,
             password: hashedPassword,
             dateOfBirth,
-            isMale
+            isMale,
+            eloBullet,
+            eloBlitz,
+            eloRapid,
         });
 
         if (!newUser) {
-            return APIResponse(response, [], "Erreur lors de la création de l'utilisateur", 500);
+            return APIResponse(response, [], "Error creating the user", 500);
         }
 
-        // Réponse avec l'ID du nouvel utilisateur
-        return APIResponse(response, newUser.id, "Vous êtes inscrit", 200);
+        // Respond with the new user's ID
+        return APIResponse(response, newUser.id, "You are registered", 200);
     } catch (err: any) {
-        logger.error(`Erreur lors de l'inscription de l'utilisateur: ${err.message}`);
+        logger.error(`Error during user registration: ${err.message}`);
 
-        // Retourne les erreurs de validation si présentes
+        // Return validation errors if present
         if (err instanceof z.ZodError) {
-            return APIResponse(response, err.errors, "Formulaire incorrect", 400);
+            return APIResponse(response, err.errors, "Invalid form", 400);
         }
 
-        // Réponse en cas d'erreur serveur
-        APIResponse(response, null, "Erreur serveur", 500);
+        // Respond with a server error
+        APIResponse(response, null, "Server error", 500);
     }
 };
 
+//Login
 export const login = async (request: Request, response: Response) => {
     try {
         const { email, password } = request.body;
         const user = await findByCredentials(email);
 
         if (!user)
-            return APIResponse(response, [], "Email ou mot de passe invalide", 400);
+            return APIResponse(response, [], "Invalid email or password", 400);
         
-        // vérification du mot de passe
+        // Verify the password
         if (await verifyPassword(user.password, password) === false) {
-            return APIResponse(response, [], "Email ou mot de passe invalide", 400);
+            return APIResponse(response, [user], "Invalid email or password", 400);
         }
 
-        // email + mdp corrects
-        // Génération des tokens refresh/access (continuer à rester connecté après une longue periode d'activité)
+        // Email and password are correct
+        // Generate refresh/access tokens to maintain session even after inactivity
         const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // On ajoute les cookies: il faut bien que ces deux tokens servent à quelque chose: on aura 2 cookies, un de la valeur de l'accesstoken et un autre du refresh token
+        // Add cookies: accessToken and refreshToken for session management
         response.cookie('accessToken', accessToken, {
-            httpOnly: true, // true empêche l'accès au cookie en javascript: accessible uniquement via communication http
-            sameSite: 'strict', // protége contre les attaques CSRF
-            secure: NODE_ENV === "production" // signifie que le cookie ne sera envoyé que sur du HTTPS
+            httpOnly: true, // Prevent access to the cookie via JavaScript, accessible only through HTTP communication
+            sameSite: 'strict', // Protects against CSRF attacks
+            secure: NODE_ENV === "production" // Ensures the cookie is sent only over HTTPS
         });
 
-        APIResponse(response, null, "Vous êtes connecté", 200);
+        APIResponse(response, null, "You are logged in", 200);
     } catch (err: any) {
-        logger.error(`Erreur lors de la connexion de l'utilisateur: ${err.message}`);
-        APIResponse(response, null, "Erreur serveur", 500);
+        logger.error(`Error during user login: ${err.message}`);
+        APIResponse(response, null, "Server error", 500);
     }
-}
+};
 
+//Logout
 export const logout = (request: Request, response: Response) => {
+    // Clear the accessToken cookie
     response.clearCookie('accessToken');
-    APIResponse(response, null, "Vous êtes déconnecté", 200);
-}
+    APIResponse(response, null, "You are logged out", 200);
+};

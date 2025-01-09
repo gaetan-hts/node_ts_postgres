@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMatch = exports.updateMatch = exports.createNewMatch = exports.getMatchesByTournament = exports.getMatch = void 0;
 const match_model_1 = require("../models/match.model");
 const utils_1 = require("../utils");
+// Fetch match by ID
 const getMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = request.params;
     try {
@@ -29,7 +30,7 @@ const getMatch = (request, response) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getMatch = getMatch;
-// Get matches by tournament ID
+// Fetch matches by tournament ID
 const getMatchesByTournament = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { tournamentId } = request.params;
     try {
@@ -47,6 +48,7 @@ const getMatchesByTournament = (request, response) => __awaiter(void 0, void 0, 
     }
 });
 exports.getMatchesByTournament = getMatchesByTournament;
+// Create new match
 const createNewMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { tournamentId, player1Id, player2Id, result, matchType } = request.body;
     try {
@@ -59,6 +61,7 @@ const createNewMatch = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.createNewMatch = createNewMatch;
+// Update existing match by ID 
 const updateMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = request.params;
     const { result } = request.body;
@@ -77,6 +80,7 @@ const updateMatch = (request, response) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.updateMatch = updateMatch;
+// Delete match by ID
 const deleteMatch = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { matchId } = request.params;
     const { userId } = request.body;

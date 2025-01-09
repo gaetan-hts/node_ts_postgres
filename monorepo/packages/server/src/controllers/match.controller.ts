@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getMatchById, createMatch, updateMatchResult, deleteMatchById, getMatchesByTournamentId } from "../models/match.model";
 import { APIResponse, logger } from "../utils";
 
+// Fetch match by ID
 export const getMatch = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
@@ -17,7 +18,7 @@ export const getMatch = async (request: Request, response: Response) => {
     } 
 };
 
-// Get matches by tournament ID
+// Fetch matches by tournament ID
 export const getMatchesByTournament = async (request: Request, response: Response) => {
     const { tournamentId } = request.params;
     try {
@@ -33,6 +34,7 @@ export const getMatchesByTournament = async (request: Request, response: Respons
     }
 };
 
+// Create new match
 export const createNewMatch = async (request: Request, response: Response) => {
     const { tournamentId, player1Id, player2Id, result, matchType } = request.body;
     try {
@@ -44,6 +46,7 @@ export const createNewMatch = async (request: Request, response: Response) => {
     }
 };
 
+// Update existing match by ID 
 export const updateMatch = async (request: Request, response: Response) => {
     const { id } = request.params;
     const { result } = request.body;
@@ -61,6 +64,7 @@ export const updateMatch = async (request: Request, response: Response) => {
     }
 };
 
+// Delete match by ID
 export const deleteMatch = async (request: Request, response: Response) => {
     const { matchId } = request.params;
     const { userId } = request.body;

@@ -1,10 +1,9 @@
-// models/participant.model.ts
 import { eq } from "drizzle-orm";
 import { db } from "../config/pool";
 import { participants } from "../schemas/participants";
 import { logger } from "../utils";
 
-// Ajouter un participant
+// Add a participant
 export const addParticipant = async (participantData: { tournamentId: string; userId: string }) => {
     try {
         const { tournamentId, userId } = participantData;
@@ -17,14 +16,14 @@ export const addParticipant = async (participantData: { tournamentId: string; us
             })
             .returning();
 
-        return newParticipant[0]; // Retourner le participant ajouté
+        return newParticipant[0];
     } catch (error: any) {
         logger.error(`Error adding participant: ${error.message}`);
         throw new Error("Error adding participant");
     }
 };
 
-// Supprimer un participant
+// Remove a participant
 export const removeParticipant = async (participantId: string) => {
     try {
         const deletedParticipant = await db
@@ -32,14 +31,14 @@ export const removeParticipant = async (participantId: string) => {
             .where(eq(participants.id, participantId))
             .returning();
 
-        return deletedParticipant[0]; // Retourner le participant supprimé
+        return deletedParticipant[0];
     } catch (error: any) {
         logger.error(`Error removing participant: ${error.message}`);
         throw new Error("Error removing participant");
     }
 };
 
-// Récupérer tous les participants d'un tournoi
+// Retrieve all participants for a specific tournament
 export const getParticipantsByTournament = async (tournamentId: string) => {
     try {
         const tournamentParticipants = await db

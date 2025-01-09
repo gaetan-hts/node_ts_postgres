@@ -10,10 +10,14 @@ const tournaments_routes_1 = __importDefault(require("./tournaments.routes"));
 const participants_routes_1 = __importDefault(require("./participants.routes"));
 const matches_routes_1 = __importDefault(require("./matches.routes"));
 const router = (0, express_1.Router)();
-// http://localhost:3000/
+// Base URL: http://localhost:3000/auth
 router.use('/auth', auth_routes_1.default);
+// Base URL: http://localhost:3000/user
 router.use('/user', user_routes_1.default);
+// Base URL: http://localhost:3000/tournament
 router.use('/tournament', tournaments_routes_1.default);
+// Base URL: http://localhost:3000/participant
 router.use('/participant', participants_routes_1.default);
+// Base URL: http://localhost:3000/match
 router.use('/match', matches_routes_1.default);
 exports.default = router;
