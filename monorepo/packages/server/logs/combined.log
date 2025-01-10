@@ -79,3 +79,23 @@
 09-01-2025 16:19:54 [[31merror[39m]: Erreur lors de la récupération de l'utilisateur: Error fetching user by ID
 09-01-2025 16:32:41 [[31merror[39m]: Error updating tournament status: No values to set
 09-01-2025 16:45:21 [[31merror[39m]: Error creating tournament: une valeur NULL viole la contrainte NOT NULL de la colonne « name » dans la relation « tournaments »
+09-01-2025 22:36:47 [[31merror[39m]: Error creating match: One or both players not found
+10-01-2025 12:40:14 [[31merror[39m]: Error creating match: One or both players not found
+10-01-2025 14:53:44 [[31merror[39m]: Error creating match: One or both players not found
+10-01-2025 14:55:16 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 14:55:43 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:06:09 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:06:39 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:06:54 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:07:09 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:07:53 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:08:04 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:08:24 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:08:27 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:12:02 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:14:07 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:16:30 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:18:33 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:19:17 [[31merror[39m]: Error creating match: erreur de syntaxe sur ou près de « where »
+10-01-2025 15:22:03 [[31merror[39m]: Error creating match: ELO field eloRapide not found in player1
+10-01-2025 16:22:10 [[31merror[39m]: Error updating match result: One or both players not found

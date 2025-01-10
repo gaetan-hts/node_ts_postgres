@@ -35,16 +35,14 @@ export const addUser = async (userData: {
     try {
         const { email, username, password, dateOfBirth, isMale, eloBullet = 1200, eloBlitz = 1200, eloRapid = 1200 } = userData;
 
-        // Hash the password
-        const hashedPassword = await hashPassword(password);
-        if (!hashedPassword) throw new Error("Error hashing the password");
+
 
         const newUser = await db
             .insert(users)
             .values({
                 email,
                 username,
-                password: hashedPassword,
+                password,
                 dateOfBirth,
                 isMale,
                 eloBullet,

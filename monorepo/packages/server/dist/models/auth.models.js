@@ -36,16 +36,12 @@ exports.findByCredentials = findByCredentials;
 const addUser = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, username, password, dateOfBirth, isMale, eloBullet = 1200, eloBlitz = 1200, eloRapid = 1200 } = userData;
-        // Hash the password
-        const hashedPassword = yield (0, utils_1.hashPassword)(password);
-        if (!hashedPassword)
-            throw new Error("Error hashing the password");
         const newUser = yield pool_1.db
             .insert(users_1.users)
             .values({
             email,
             username,
-            password: hashedPassword,
+            password,
             dateOfBirth,
             isMale,
             eloBullet,

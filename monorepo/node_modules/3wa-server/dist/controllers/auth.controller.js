@@ -67,20 +67,20 @@ const login = (request, response) => __awaiter(void 0, void 0, void 0, function*
         const user = yield (0, auth_models_1.findByCredentials)(email);
         if (!user)
             return (0, utils_1.APIResponse)(response, [], "Invalid email or password", 400);
-        // Verify the password
+        // Vérifier le mot de passe
         if ((yield (0, utils_1.verifyPassword)(user.password, password)) === false) {
-            return (0, utils_1.APIResponse)(response, [user], "Invalid email or password", 400);
+            return (0, utils_1.APIResponse)(response, [], "Invalid email or password", 400);
         }
-        // Email and password are correct
-        // Generate refresh/access tokens to maintain session even after inactivity
+        // Générer un accessToken avec JWT
         const accessToken = jsonwebtoken_1.default.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-        // Add cookies: accessToken and refreshToken for session management
+        // Ajouter le cookie avec l'accessToken
         response.cookie('accessToken', accessToken, {
-            httpOnly: true, // Prevent access to the cookie via JavaScript, accessible only through HTTP communication
-            sameSite: 'strict', // Protects against CSRF attacks
-            secure: NODE_ENV === "production" // Ensures the cookie is sent only over HTTPS
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: NODE_ENV === "production", // Assurez-vous que ce soit true en production
         });
-        (0, utils_1.APIResponse)(response, null, "You are logged in", 200);
+        // Réponse avec les informations de connexion
+        return (0, utils_1.APIResponse)(response, { accessToken, userId: user.id }, "You are logged in", 200);
     }
     catch (err) {
         utils_1.logger.error(`Error during user login: ${err.message}`);

@@ -14,24 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hashPassword = hashPassword;
 exports.verifyPassword = verifyPassword;
-const argon2_1 = __importDefault(require("argon2"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+// Fonction de hashage du mot de passe
 function hashPassword(password) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!password || password.length < 6) { // Vérification manuelle
+        if (!password || password.length < 6) {
             console.error('Mot de passe invalide: trop court ou vide');
             return;
         }
-        // On va hash un mot de passe
         try {
-            const hash = yield argon2_1.default.hash(password, {
-                type: argon2_1.default.argon2id, // utilisation de l'algo argon2id pour le hashage -> le + recommandé
-                // v options hardware en dessous
-                memoryCost: 2 ** 16, // 2^16=65536=64MB
-                timeCost: 3, // 3 passes -> cad 3 itérations pour le hashage
-                parallelism: 1, // 1 thread (coeur CPU) utilisé pour le hashage 
-                salt: Buffer.from("SuperSaltGentil") // "clé" ou salt de hashage pour rendre le hashage unique
-            });
-            console.log('Mot de passe hashé: ', hash);
+            // Génération du salt
+            const saltRounds = 10; // Le nombre de rounds d'encryption
+            const hash = yield bcrypt_1.default.hash(password, saltRounds);
             return hash;
         }
         catch (err) {
@@ -39,14 +33,12 @@ function hashPassword(password) {
         }
     });
 }
-// On vérifie que le mot de passe hashé et en clair matches bien
+// Fonction de vérification du mot de passe
 function verifyPassword(hashedPassword, inputPassword) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log(hashedPassword);
-            console.log(inputPassword);
-            const result = yield argon2_1.default.verify(hashedPassword, inputPassword);
-            console.log(result);
+            // Vérification du mot de passe
+            const result = yield bcrypt_1.default.compare(inputPassword, hashedPassword);
             return result;
         }
         catch (err) {

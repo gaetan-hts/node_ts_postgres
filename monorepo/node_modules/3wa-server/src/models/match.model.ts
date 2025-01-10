@@ -2,6 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../config/pool";
 import { matches } from "../schemas/matches";
 import { logger } from "../utils";
+import { users } from "../schemas";
 
 // Fetch match by ID
 export const getMatchById = async (id: string) => {
@@ -46,6 +47,9 @@ export const createMatch = async (matchData: {
     try {
         const { tournamentId, player1Id, player2Id, result, matchType } = matchData;
 
+        // Log input data for debugging
+        console.log("Creating match with data:", matchData);
+
         const newMatch = await db
             .insert(matches)
             .values({
@@ -57,21 +61,31 @@ export const createMatch = async (matchData: {
             })
             .returning();
 
+        console.log("New match created:", newMatch);
+
         return newMatch[0];
     } catch (error: any) {
         logger.error(`Error creating match: ${error.message}`);
+        // Log stack trace for more details
+        console.error(error.stack);
         throw new Error("Error creating match");
     }
 };
 
+
 // Update match result by ID
 export const updateMatchResult = async (matchId: string, result: string) => {
     try {
+        // Update the match result in the database
         const updatedMatch = await db
             .update(matches)
             .set({ result })
             .where(eq(matches.id, matchId))
             .returning();
+
+        if (updatedMatch.length === 0) {
+            throw new Error("Match not found in the database");
+        }
 
         return updatedMatch[0];
     } catch (error: any) {
@@ -79,6 +93,7 @@ export const updateMatchResult = async (matchId: string, result: string) => {
         throw new Error("Error updating match result");
     }
 };
+
 
 // delete Match by ID
 export const deleteMatchById = async (id: string, userId: string) => {
@@ -99,3 +114,16 @@ export const deleteMatchById = async (id: string, userId: string) => {
         throw new Error("Match could not be deleted");
     }
 };
+
+export const getUserById = async (id: string) => {
+    return db.select().from(users).where(eq(users.id, id)).then(results => results[0]);
+};
+
+// Mettre à jour l'ELO d'un utilisateur
+export const updateUserElo = async (userId: string, eloField: string, newElo: number) => {
+    
+    return db
+        .update(users)
+        .set({ [eloField]: newElo })
+        .where(eq(users.id, userId));
+}; 

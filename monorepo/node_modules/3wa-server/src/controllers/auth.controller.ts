@@ -29,6 +29,8 @@ export const register = async (request: Request, response: Response) => {
         if (emailAlreadyExists)
             return APIResponse(response, [], "This email is already in use", 400);
 
+        
+        
         // Hash the password
         const hashedPassword = await hashPassword(password);
         if (!hashedPassword)
@@ -73,29 +75,30 @@ export const login = async (request: Request, response: Response) => {
 
         if (!user)
             return APIResponse(response, [], "Invalid email or password", 400);
-        
-        // Verify the password
+
+        // Vérifier le mot de passe
         if (await verifyPassword(user.password, password) === false) {
-            return APIResponse(response, [user], "Invalid email or password", 400);
+            return APIResponse(response, [], "Invalid email or password", 400);
         }
 
-        // Email and password are correct
-        // Generate refresh/access tokens to maintain session even after inactivity
+        // Générer un accessToken avec JWT
         const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Add cookies: accessToken and refreshToken for session management
+        // Ajouter le cookie avec l'accessToken
         response.cookie('accessToken', accessToken, {
-            httpOnly: true, // Prevent access to the cookie via JavaScript, accessible only through HTTP communication
-            sameSite: 'strict', // Protects against CSRF attacks
-            secure: NODE_ENV === "production" // Ensures the cookie is sent only over HTTPS
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: NODE_ENV === "production",  // Assurez-vous que ce soit true en production
         });
 
-        APIResponse(response, null, "You are logged in", 200);
+        // Réponse avec les informations de connexion
+        return APIResponse(response, { accessToken, userId: user.id }, "You are logged in", 200);
     } catch (err: any) {
         logger.error(`Error during user login: ${err.message}`);
         APIResponse(response, null, "Server error", 500);
     }
 };
+
 
 //Logout
 export const logout = (request: Request, response: Response) => {
